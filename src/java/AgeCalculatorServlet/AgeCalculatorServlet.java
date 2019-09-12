@@ -34,8 +34,6 @@ public class AgeCalculatorServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         /* TODO output your page here. You may use following sample code. */
 
-        String url = "/agecalculator.jsp";
-        request.getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -50,7 +48,8 @@ public class AgeCalculatorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/agecalculator.jsp";
+        request.getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -65,6 +64,29 @@ public class AgeCalculatorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
+        String age = request.getParameter("input_age");
+        boolean check = true;
+        try {
+            int num = Integer.parseInt(age);
+        } catch (NumberFormatException e) {
+            check = false;
+        }
+
+        if (age == null || age == "") {
+            request.setAttribute("message", "You must give your current age");
+            getServletContext().getRequestDispatcher("/agecalculator.jsp").forward(request, response);
+            return;
+        } else if (!check) {
+            request.setAttribute("message", "You must enter a number.");
+            getServletContext().getRequestDispatcher("/agecalculator.jsp").forward(request, response);
+            return;
+        } else {
+            int nextage = Integer.parseInt(age) + 1;
+            request.setAttribute("message", "Your age next birthday will be " + nextage);
+            getServletContext().getRequestDispatcher("/agecalculator.jsp").forward(request, response);
+            return;
+        }
     }
 
     /**

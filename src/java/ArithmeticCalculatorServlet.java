@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Student
  */
-@WebServlet(name="ArithmeticCalculatorServlet", urlPatterns={"/arithmetic"})
+@WebServlet(name = "ArithmeticCalculatorServlet", urlPatterns = {"/arithmetic"})
 public class ArithmeticCalculatorServlet extends HttpServlet {
 
     /**
@@ -30,12 +30,7 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-       
-            /* TODO output your page here. You may use following sample code. */
-         String url="/arithmetic.jsp";
-            request.getServletContext().getRequestDispatcher(url).forward(request, response);
-   
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -50,7 +45,10 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        String url = "/arithmetic.jsp";
+        request.setAttribute("message", "---");
+        getServletContext().getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -65,6 +63,46 @@ public class ArithmeticCalculatorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        String first = request.getParameter("first");
+        String second = request.getParameter("second");
+        String calculate = request.getParameter("calculate");
+        boolean check = true;
+
+        try {
+            int num1 = Integer.parseInt(first);
+            int num2 = Integer.parseInt(second);
+        } catch (NumberFormatException e) {
+            check = false;
+        }
+
+        if (first == null || first == "" || second == null || second == "" || !check) {
+            request.setAttribute("message", "invalid");
+            getServletContext().getRequestDispatcher("/arithmetic.jsp").forward(request, response);
+            return;
+        } else {
+            int result = 0;
+
+            switch (calculate) {
+                case "+":
+                    result = Integer.parseInt(first) + Integer.parseInt(second);
+                    break;
+                case "-":
+                    result = Integer.parseInt(first) - Integer.parseInt(second);
+                    break;
+                case "*":
+                    result = Integer.parseInt(first) * Integer.parseInt(second);
+                    break;
+                case "%":
+                    result = Integer.parseInt(first) % Integer.parseInt(second);
+                    break;
+            }
+            request.setAttribute("first_val", first);
+            request.setAttribute("second_val", second);
+
+            request.setAttribute("message", result);
+            getServletContext().getRequestDispatcher("/arithmetic.jsp").forward(request, response);
+            return;
+        }
     }
 
     /**
